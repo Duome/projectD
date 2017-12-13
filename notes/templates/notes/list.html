@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'message.html' %}
+<ul class="breadcrumb">
+	<li>笔记本</li>
+	<li class="divider"></li>
+	<li>笔记列表</li>
+</ul>
+<div id="edit_massege">
+</div>
+<div class="widget widget-tabs widget-tabs-double-2 widget-tabs-vertical row-fluid ">
+    <!-- Tabs Heading -->
+    <div class="widget-head span1">
+        <ul>
+            <li class="active"><a class="glyphicons notes" href="#show_note" data-toggle="tab"><i></i><span>笔记</span></a></li>
+            <li><a class="glyphicons pencil" href="#add_note" data-toggle="tab"><i></i><span>新建笔记</span></a></li>
+        </ul>
+    </div>
+    <!-- // Tabs Heading END -->
+
+    <div class="widget-body span3">
+        <div class="tab-content">
+            {% include 'notes/show-note.html' %}
+            {% include 'notes/add-note.html' %}
+        </div>
+    </div>
+{#    <span class="btn btn-toggle-code btn-mini btn-primary btn-icon glyphicons embed_close" data-toggle="hide" data-target="#code-6"><i></i> Source</span>#}
+</div>
+{% include 'tags/modal.html' %}
+{% endblock %}
+
+{% block self_foot_script %}
+<script>
+var E = window.wangEditor;
+var editor = new E('#div1', '#div2'); // 两个参数也可以传入 elem 对象，class 选择器
+editor.create();
+
+{#{% for note in notes %}#}
+{#    var F = window.wangEditor;#}
+{#    var edit_editor{{ note.id }}= new F('#edit_div1{{ note.id }}', '#edit_div2{{ note.id }}');  // 两个参数也可以传入 elem 对象，class 选择器#}
+{#    edit_editor{{ note.id }}.customConfig.uploadImgShowBase64 = true;#}
+{#    edit_editor{{ note.id }}.create();#}
+{#{% endfor %}#}
+
+String.prototype.format = function(args) {
+    var result = this;
+    if (arguments.length > 0) {
+        if (arguments.length === 1 && typeof (args) === "object") {
+            for (var key in args) {
+                if(args[key] !== undefined){
+                    var reg = new RegExp("({" + key + "})", "g");
+                    result = result.replace(reg, args[key]);
+                }
+            }
+        }
+        else {
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] !== undefined) {
+                    var reg= new RegExp("({)" + i + "(})", "g");
+                    result = result.replace(reg, arguments[i]);
+                }
+            }
+        }
+    }
+    return result;
+};
+
+function note_Submit() {
+    $('#note_tag').val($("#add-note-tag").find("option:selected").val());
+    $('#note_text').val(editor.txt.text());
+    $('#note_content').val(editor.txt.html());
+    $('#note_form').submit();
+}
+
+function Editview(note_id){
+    $('#view_note').empty();
+    $.ajax({
+    type: 'GET',
+    url: '{% url 'ajax_show_note' %}',
+    data: {'id': note_id},
+    success: function (ret) {
+        var text = "\
+        <div>\
+            <div class=\"tab-pane active widget-body-regular \" style=\"width: 1430px; height: 610px; border-style:none\">\
+            <a id='set_tag' class=\"glyphicons bookmark\" style=\"opacity: 0.5\"><i></i><span>标签</span></a>\
+            <select id=\"edit-note-tag\" class=\"control\" name=\"edit-note-tag\" title=\"add-tag\">\
+                <option></option>\
+                {% for tag in tags %}\
+                    {% if ret and tag_name == tag.name %}\
+                        <option value=\"{{ tag.name }}\" selected>{{ tag.name }}</option>\
+                    {% else %}\
+                        <option value=\"{{ tag.name }}\">{{ tag.name }}</option>\
+                    {% endif %}\
+                {% endfor %}\
+            </select>\
+            <a href=\"#\" onclick=\"showTags()\">标签管理</a>\
+            <div id=\"edit_div1\" class=\"toolbar\"></div>\
+            <div>\
+                &nbsp;&nbsp;&nbsp;<input class=\"text-primary\" id=\"edit_note_title\" value=\"{1}\" style=\"border-style: none; position: absolute; font-size: 22px; opacity: 0.7\" />\
+                <input type=\"text\" id=\"edit_note_text\" name=\"note_text\" style=\"display:none\"/>\
+                <input type=\"text\" id=\"edit_note_content\" name=\"note_content\" style=\"display:none\"/>\
+                <input type=\"text\" id=\"edit_note_tag\" name=\"note_tag\" style=\"display:none\">\
+                <a href=\"#\" class=\"glyphicons no-js ok_2\" style=\"border-style: none; position: absolute; right: 45px; opacity: 0.7; background-color: white\" onclick=\"Note_edit_submit({0})\"><i></i></a>\
+            </div>\
+            <div id=\"edit_div2\" class=\"text\" style=\"height: 500px; top: 30px\">{2}</div>\
+            </div>\
+        </div>\
+        ".format(ret[0], ret[1], ret[2]);
+        $('#view_note').append(text);
+        $('#edit-note-tag'.format(ret[0])).val('{0}'.format(ret[5]));
+        var F = window.wangEditor;
+        var edit_editor = new F('#edit_div1', '#edit_div2');  // 两个参数也可以传入 elem 对象，class 选择器
+        edit_editor.customConfig.uploadImgShowBase64 = true;
+        edit_editor.onchange = function () {
+            // 编辑区域内容变化时，实时打印出当前内容
+            alert(this.$txt.html());
+        };
+        edit_editor.create();
+    }
+})
+}
+
+function Note_edit_submit(edit_list){
+    var F = window.wangEditor;
+    var edit_editor = new F('#edit_div1', '#edit_div2');  // 两个参数也可以传入 elem 对象，class 选择器
+    edit_editor.customConfig.uploadImgShowBase64 = true;
+    edit_editor.create();
+    var div_id = $('#edit_div2').children('div').attr('id');  // 获取id
+    var div = document.getElementById(div_id).innerHTML;  // 获取子元素内的html（字符串格式）
+    tag = $("#edit_note_tag").val($("#edit-note-tag").find("option:selected").val());
+    text = $("#edit_note_text").val(edit_editor.txt.text());
+    content = $("#edit_note_content").val(div);
+    console.log('12456');
+    console.log($("#edit_note_content").val());
+    $.ajax({
+        type: 'GET',
+        url: '{% url 'ajax_edit_note' %}',
+        data: {'tag': $("#edit-note-tag").val(),
+               'title':$("#edit_note_title").val(),
+               'text': $("#edit_note_text").val(),
+               'content': $("#edit_note_content").val(),
+               'id': edit_list},
+        success: function (ret) {
+            if (ret.length === 1)
+            {
+                var message = "\
+                <span class=\"gritter-add-sticky btn btn-default btn-block center\" style=\"padding: 10px\">\
+                    <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">×</button>\
+                    <a><strong>{0}</strong></a>\
+                </span>\
+                ".format(ret[0]);
+                $('#edit_massege').append(message)
+            }
+            else
+            {
+                var message = "\
+                <span class=\"gritter-add-sticky btn btn-default btn-block center\" style=\"padding: 10px\">\
+                    <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">×</button>\
+                    <a><strong>{0}</strong></a>\
+                </span>\
+                ".format(ret[6]);
+                $('#edit_massege').append(message);
+                $('#view_note').empty();
+                $('#view_note').append('<div>\
+                                            <a href="{% url "delete_note" %}?delete_note_id={0}" class="btn btn-mini btn-primary btn-icon glyphicons bin pull-right" ><i></i>删除</a\
+                                            <span class="pull-right">&nbsp;</span>\
+                                            <a class="btn btn-mini btn-success btn-icon glyphicons pencil pull-right" onclick="Editview({0})"><i></i>修改</a>\
+                                            <h1>{1}</h1>\
+                                            <div style="overflow: auto; height: 500px">\
+                                                {2}\
+                                            </div>\
+                                            <p>创建日期{3}</p>\
+                                            <p>修改日期{4}</p>\
+                                        </div>'.format(ret[0], ret[1], ret[2], ret[3], ret[4]))
+            }
+        }
+    });
+}
+
+function Shownote(note_id) {
+    $('#view_note').empty();
+    $.ajax({
+    type: 'GET',
+    url: '{% url 'ajax_show_note' %}',
+    data: {'id': note_id},
+    success: function (ret) {
+        $('#view_note').append('<div>\
+                                  <a href="{% url "delete_note" %}?delete_note_id={0}" class="btn btn-mini btn-primary btn-icon glyphicons bin pull-right" ><i></i>删除</a>\
+                                  <span class="pull-right">&nbsp;</span>\
+                                  <a class="btn btn-mini btn-success btn-icon glyphicons pencil pull-right" onclick="Editview({0})"><i></i>修改</a>\
+                                  <h1>{1}</h1>\
+                                  <div style="overflow: auto; height: 500px">\
+                                      {2}\
+                                  </div>\
+                                  <p>创建日期{3}</p>\
+                                  <p>修改日期{4}</p>\
+                              </div>'.format(ret[0], ret[1], ret[2], ret[3], ret[4]))
+        }
+    })
+}
+
+</script>
+{% endblock %}

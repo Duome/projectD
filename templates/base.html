@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="ie lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html class="ie lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html class="ie lt-ie9"> <![endif]-->
+<!--[if gt IE 8]> <html class="ie gt-ie8"> <![endif]-->
+<!--[if !IE]><!--><html><!-- <![endif]-->
+
+
+<head>
+    <title>ProjectD</title>
+    <!-- Meta -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+    <script type="text/javascript" src="https://unpkg.com/wangeditor/release/wangEditor.min.js">
+    </script>
+    {% include 'head_css.html' %}
+    {% block self_head_css %}{% endblock %}
+</head>
+
+
+<body class="">
+    <!-- Main Container Fluid -->
+    <div class="container-fluid fluid menu-left">
+        {% include 'topnav.html' %}
+
+        <!-- Sidebar menu & content wrapper -->
+        <div id="wrapper">
+            <div id="menu" class="hidden-phone hidden-print">{% include 'sidebar.html' %}</div>
+            <div id="content">{% block content %}{% endblock %}</div>
+        </div>
+        <!-- // Sidebar menu & content wrapper END -->
+
+        {% include 'footer.html' %}
+    </div>
+    <!-- // Main Container Fluid END -->
+
+    {% include 'foot_script.html' %}
+    {% block self_foot_script %}{% endblock %}
+</body>
+
+
+</html>

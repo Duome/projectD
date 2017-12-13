@@ -1,0 +1,41 @@
+ <!-- Scrollable menu wrapper with Maximum height -->
+<div class="slim-scroll" data-scroll-height="800px">
+
+    <!-- Sidebar Profile -->
+    <span class="profile">
+        <a class="img" href="my_account.html?lang=en&amp;layout_type=fluid&amp;menu_position=menu-left&amp;style=style-dark"><img src="http://duome.coding.me/img/favicon.ico"/></a>
+        <span>
+            <strong>欢迎</strong>
+            <a href="my_account.html?lang=en&amp;layout_type=fluid&amp;menu_position=menu-left&amp;style=style-dark">Duome<i></i></a>
+        </span>
+    </span>
+    <!-- // Sidebar Profile END -->
+
+    <!-- Regular Size Menu -->
+    <ul>
+        <!-- Menu Regular Item -->
+        <li class="glyphicons adress_book"><a href="{% url 'list_user' %}"><i></i><span>用户</span></a></li>
+        <li class="glyphicons check"><a href="{% url 'index' %}"><i></i><span>任务</span></a></li>
+        <li class="glyphicons tag"><a href="{% url 'list_link' %}"><i></i><span>收藏夹</span></a></li>
+
+        <li class="glyphicons tag"><a href="{% url 'notes' %}"><i></i><span>笔记本</span></a></li>
+
+        <!-- Gallery Submenu Level 1 -->
+        <li class="hasSubmenu">
+            <a data-toggle="collapse" class="glyphicons usd" href="#menu_gallery"><i></i><span>记账簿</span></a>
+            <ul class="collapse" id="menu_gallery">
+                <li class=""><a href="gallery_1.html?lang=en&amp;layout_type=fluid&amp;menu_position=menu-left&amp;style=style-dark"><span>Gallery #1</span></a></li>
+                <li class=""><a href="gallery_2.html?lang=en&amp;layout_type=fluid&amp;menu_position=menu-left&amp;style=style-dark"><span>Gallery #2</span></a></li>
+                <li class=""><a href="videos.html?lang=en&amp;layout_type=fluid&amp;menu_position=menu-left&amp;style=style-dark"><span>Videos</span></a></li>
+            </ul>
+        </li>
+        <!-- // Gallery Submenu Level 1 END -->
+        <li class="glyphicons hdd"><a href="http://120.78.58.71:8000" target="_blank"><i></i><span>网盘</span></a></li>
+
+    </ul>
+    <div class="clearfix"></div>
+    <div class="separator bottom"></div>
+    <!-- // Regular Size Menu END -->
+
+</div>
+<!-- // Scrollable Menu wrapper with Maximum Height END -->

@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+	<li>收藏夹</li>
+	<li class="divider"></li>
+</ul>
+{% include 'message.html' %}
+<div class="separator bottom"></div>
+
+<div class="innerLR">
+    <div class="widget">
+        <div class="widget-body">
+            <form id="add-form" method="POST">
+                {% csrf_token %}
+                标题 &ensp;<input id="add-title" class="control" name="add-title" title="add-title" type="text" value="{{ data.name }}"><br>
+                地址 &ensp;<input id="add-address" class="control" name="add-address" title="add-address" type="text" value="{% if ret %}{{ address }}{% endif %}"><br>
+                标签 &ensp;
+                <select id="add-tag" class="control" name="add-tag" title="add-tag">
+                    <option></option>
+                    {% for tag in tags %}
+                        {% if ret and tag_name == tag.name %}
+                            <option value="{{ tag.name }}" selected>{{ tag.name }}</option>
+                        {% else %}
+                            <option value="{{ tag.name }}">{{ tag.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select> &ensp;
+                <a href="#" onclick="showTags()">标签管理</a>
+                <div class="buttons pull-right">
+                    <button type="submit" class="btn btn-primary btn-icon glyphicons circle_plus"><i></i>添加</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="widget">
+        <div class="widget-head"></div>
+
+        <div class="widget-body">
+            <table id="link-table" class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th style="display: none;">ID</th>
+                        <th>标题</th>
+                        <th>地址</th>
+                        <th>标签</th>
+                        <th>时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for link in links %}
+                        <tr>
+                            <td class="td-id" style="display: none;">{{ link.id }}</td>
+                            <td class="td-title">{{ link.title }}</td>
+                            <td class="td-address"><a href="{{ link.address }}" target="_blank">{{ link.address }}</a></td>
+                            <td class="td-tag"><div class="label">{{ link.tag.name }}</div></td>
+                            <td class="td-date">{{ link.date|date:"Y-m-d H:i:s" }}</td>
+                            <td>
+                                <a href="#" class="btn-action glyphicons pencil btn-success" onclick="showModal(this)"><i></i></a>
+                                <a href="{% url 'delete_link' %}?delete-title={{ link.title }}" class="btn-action glyphicons remove_2 btn-danger"><i></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="update-link-modal" class="modal hide fade">
+    <div class="modal-header">
+        <h3>修改链接</h3>
+    </div>
+    <div class="modal-body">
+    <form id="update-link-form" method="POST">
+        {% csrf_token %}
+        <input id="update-id" name="update-id" title="update-id" type="hidden">
+        标题 &ensp;<input id="update-title" class="control span6" name="update-title" title="update-title" type="text"><br>
+        地址 &ensp;<input id="update-address" class="control span6" name="update-address" title="update-address" type="text"><br>
+        标签&ensp;
+        <select id="update-tag" class="control span6" name="update-tag" title="update-tag">
+            <option value=""></option>
+            {% for tag in tags %}
+                <option value="{{ tag.name }}">{{ tag.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    </div>
+    <div class="modal-footer">
+        <a id="save-update-link" href="#" class="btn btn-primary" onclick="submitUpdate()">保存</a>
+        <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">取消</a>
+    </div>
+</div>
+
+{% include 'tags/modal.html' %}
+
+{% endblock %}
+
+
+{% block self_foot_script %}
+<script>
+
+function showModal(obj) {
+    $("#update-id").val($(obj).parent().parent().find(".td-id").text());
+    $("#update-title").val($(obj).parent().parent().find(".td-title").text());
+    $("#update-address").val($(obj).parent().parent().find(".td-address").text());
+    $("#update-tag").val($(obj).parent().parent().find(".td-tag").text());
+    $("#update-date").val($(obj).parent().parent().find(".td-date").text());
+    $("#update-link-modal").modal("show");
+}
+
+function submitUpdate() {
+    $("#update-link-form").submit();
+}
+
+$('#add-form').validator({
+    timely: 3,
+    theme: "yellow_right_effect",
+    rules: {
+        pattern: [/^https?:\/\/[\s\S]*$/, '必须为带http://或https://开头的网址']
+    },
+
+    fields: {
+        "add-title": {rule: "required;"},
+        "add-address": {rule: "required; pattern;"},
+        "add-tag": {rule: "required;"}
+    },
+    valid: function(form) {
+            form.submit();
+        }
+});
+$('#update-link-form').validator({
+    timely: 3,
+    theme: "yellow_right_effect",
+    rules: {
+        pattern: [/^https?:\/\/[\s\S]*$/, '必须为http://或https://开头的网址']
+    },
+
+    fields: {
+        "update-title": {rule: "required;"},
+        "update-address": {rule: "required; pattern"},
+        "update-tag": {rule: "required;"}
+    },
+    valid: function(form) {
+    	form.submit();
+    }
+});
+
+$('#tag-modal').on('hidden.bs.modal', function () {
+	$("#ret").empty();
+});
+
+$(document).ready(function(){
+    $('#link-table').DataTable({
+        pageLength: 50
+    });
+});
+
+</script>
+{% endblock %}

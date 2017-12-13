@@ -1,0 +1,91 @@
+<div id="tag-modal" class="modal hide fade">
+    <div class="modal-header">
+        <h3>标签管理</h3>
+    </div>
+    <div class="modal-body">
+        <div id="ret"></div>
+        <div class="separator bottom"></div>
+        <table id="list-tag" class="table table-condensed table-hover">
+            <tbody id="list-tag"></tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        标签 &ensp;<input id="input-tag" class="control" name="input-tag" title="input-tag" type="text" value="">
+        <a href="#" class="btn btn-primary" onclick="addTag()">添加</a>
+        <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
+    </div>
+</div>
+
+<script>
+
+String.prototype.format = function(args) {
+    var result = this;
+    if (arguments.length > 0) {
+        if (arguments.length === 1 && typeof (args) === "object") {
+            for (var key in args) {
+                if(args[key] !== undefined){
+                    var reg = new RegExp("({" + key + "})", "g");
+                    result = result.replace(reg, args[key]);
+                }
+            }
+        }
+        else {
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] !== undefined) {
+                    var reg= new RegExp("({)" + i + "(})", "g");
+                    result = result.replace(reg, arguments[i]);
+                }
+            }
+        }
+    }
+    return result;
+};
+
+function showTags() {
+    $.ajax({
+        type: 'GET',
+        url: '{% url 'ajax_list_tag' %}',
+        data: {},
+        success: function (ret) {
+            var list_tag = "#list-tag";
+            $(list_tag).empty();
+            for (var i = 0; i < ret.length; i++) {
+                $(list_tag).append('<tr><td>{0}</td><td><a href="#" class="btn-action glyphicons remove_2 btn-danger" onclick="deleteTag(\'{0}\')"><i></i></a></td></tr>'.format(ret[i]));
+            }
+        }
+    });
+    $("#tag-modal").modal("show");
+}
+
+
+function addTag() {
+    $.ajax({
+        type: 'GET',
+        url: '{% url 'ajax_add_tag' %}',
+        data: {'name': $("#input-tag").val()},
+        success: function (ret) {
+            $("#input-tag").val('');
+            generateModalBody(ret);
+        }
+    });
+}
+
+function deleteTag(name) {
+    $.ajax({
+        type: 'GET',
+        url: '{% url 'ajax_delete_tag' %}',
+        data: {name: name},
+        success: function (ret) {
+            generateModalBody(ret);
+        }
+    });
+}
+
+function generateModalBody(ret) {
+    label = "#ret";
+    $(label).empty();
+    $(label).append('<span class="gritter-add-sticky btn btn-default btn-block center" style="padding: 10px;"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><a>' + ret + '</a></span>');
+    showTags();
+}
+
+</script>

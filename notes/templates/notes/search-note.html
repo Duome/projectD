@@ -1,0 +1,47 @@
+<!-- search note -->
+<div id="search_note" class="tab-pane widget-body-regular" style="width: 1430px; height: 610px">
+    <div class="separator bottom"></div>
+    <h3 >搜索</h3>
+    <div class="innerLR">
+        <div class="widget">
+            <div class="widget-body">
+                <table id="my_note_Table" class="dynamicTable table table-striped table-bordered table-condensed">
+                    <!-- 表头 -->
+                    <thead>
+                        <tr>
+                            <th>标题</th>
+                            <th>内容</th>
+                            <th>标签</th>
+                            <th>创作日期</th>
+                            <th>修改日期</th>
+                            <th>操作</th>
+                            <th style="display: none;">id</th>
+                        </tr>
+                    </thead>
+                    <!-- //表头结束 -->
+                    <!-- 表格内容 -->
+                    <tbody>
+                    {% for note in notes %}
+                        <tr class="gradeX">
+                            <td class="td_title">{{ note.title }}</td>
+                            <td class="td_text">{{ note.text }}</td>
+                            <td>
+                                <span class="label">{{ note.tag }}</span>
+                            </td>
+                            <td class="right">{{ note.created }}</td>
+                            <td class="right">{{ note.modified }}</td>
+                            <td class="right">
+                                <a href="#" id= "delete_note{{ note.id }}" class="btn-action glyphicons remove_2 btn-danger" onclick="Deletenote()"><i></i></a>
+                            </td>
+                            <td class="td_id" style="display: none;">{{ note.id }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <!-- //表格内容结束 -->
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- // search note END -->

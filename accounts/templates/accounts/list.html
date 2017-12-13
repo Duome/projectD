@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+	<li>用户管理</li>
+	<li class="divider"></li>
+	<li>所有用户</li>
+</ul>
+{% include 'message.html' %}
+<div class="separator bottom"></div>
+
+
+<div class="innerLR">
+    <div class="widget">
+		<div class="widget-head">
+            <a href="{% url 'add_user' %}" type="button">添加用户</a>
+        </div>
+
+        <div class="widget-body">
+            <table id="user-table" class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>用户名</th>
+                        <th>姓名</th>
+                        <th>Email</th>
+                        <th>权限</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for user in users %}
+                        {% if user.username != 'admin' %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ '' }}</td>
+                                <td>
+                                    <a href="{% url 'update_user' %}?username={{ user.username }}" class="btn-action glyphicons pencil btn-success"><i></i></a>
+                                    <a href="{% url 'delete_user' %}?username={{ user.username }}" class="btn-action glyphicons remove_2 btn-danger"><i></i></a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block self_foot_script %}
+<script>
+$(document).ready(function(){
+    $('#user-table').DataTable({
+        pageLength: 50
+    });
+});
+</script>
+{% endblock %}

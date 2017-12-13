@@ -1,0 +1,81 @@
+<!-- show note -->
+<div id="show_note" class="tab-pane active widget-body-regular" style="width: 1430px; height: 610px">
+    <div class="widget-head span3" style="overflow: scroll; height: 600px">
+        <ul>
+            <li style="height: 100px;">
+                <h2 style="padding: 10px">搜索</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="widget-body">
+                        <div class="input-append">
+                            <input class="span10" id="search_notes" name="search_notes" type="text" placeholder="Placeholder .." />
+                            <button class="btn btn-default" type="submit"><i class="icon-search"></i></button>
+                            <a href="{% url 'notes' %}" class="btn btn-default">all</a>
+                        </div>
+                    </div>
+                </form>
+            </li>
+            {% for note in notes %}
+            <input type="text" value="{{ note.id }}" id="show_note_id" style="display: none"/>
+            <li>
+                <a class="glyphicons book_open" data-toggle="tab" onclick="Shownote({{ note.id }})"><i></i>
+                    <span class="strong" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;width:200px">{{ note.title }}</span>
+                    <span>{{ note.created|date:"Y-m-d H:i:s" }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div  id="view_note" style=" position: absolute; left: 550px; top: 30px; width:1000px; height: 610px">
+{#                {% for note in notes %}#}
+{#                <div class="tab-pane" id="note{{ note.id }}">#}
+{#                    <a href="{% url 'delete_note' %}?delete_note_id={{ note.id }}" class="btn btn-mini btn-primary btn-icon glyphicons bin pull-right" ><i></i>删除</a>#}
+{#                    <span class="pull-right">&nbsp;</span>#}
+{#                    <a class="btn btn-mini btn-success btn-icon glyphicons pencil pull-right" onclick="Editnote([{{ note.id }}, '{{ note.title }}', '{{ note.content }}'])"><i></i>修改</a>#}
+{#                    <div id="note_view_top{{ note.id }}"></div>#}
+{#                    <div id="note_view{{ note.id }}" style="overflow: auto">#}
+{#                        <h1>{{ note.title }}</h1>#}
+{#                        {{ note.content|safe }}#}
+{#                        <p>创建日期{{ note.created|date:"Y-m-d H:i:s" }}</p>#}
+{#                        <p>修改日期{{ note.modified|date:"Y-m-d H:i:s" }}</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#                {% endfor %}#}
+{#                {% for note in notes %}#}
+{#                    <div class="tab-pane" id="note{{ note.id }}">#}
+{##}
+{#                        <div id="edit_note{{ note.id }}" class="tab-pane active widget-body-regular " style="width: 1430px; height: 610px; border-style:none">#}
+{#                            <a id='set_tag' class="glyphicons bookmark" style="opacity: 0.5"><i></i><span>标签</span></a>#}
+{#                            <select id="add-tag" class="control" name="add-tag" title="add-tag">#}
+{#                                <option></option>#}
+{#                                {% for tag in tags %}#}
+{#                                    {% if ret and tag_name == tag.name %}#}
+{#                                        <option value="{{ tag.name }}" selected>{{ tag.name }}</option>#}
+{#                                    {% else %}#}
+{#                                        <option value="{{ tag.name }}">{{ tag.name }}</option>#}
+{#                                    {% endif %}#}
+{#                                {% endfor %}#}
+{#                            </select>#}
+{#                            <a href="#" onclick="showTags()">标签管理</a>#}
+{#                            <div id="edit_div1{{ note.id }}" class="toolbar"></div>#}
+{#                            <div>#}
+{#                            <form id="edit_note_form{{ note.id }}" method="post">#}
+{#                            {% csrf_token %}#}
+{#                                &nbsp;&nbsp;&nbsp;<input class="text-primary" name="note_title" value="{{ note.title }}" style="border-style: none; position: absolute; font-size: 22px; opacity: 0.7" />#}
+{#                                <input type="text" id="edit_note_text" name="note_text" style="display:none"/>#}
+{#                                <input type="text" id="edit_note_content" name="note_content" style="display:none"/>#}
+{#                                <input type="text" id="edit_note_tag" name="note_tag" style="display:none">#}
+{#                                <button class="glyphicons no-js ok_2" style="border-style: none; position: absolute; right: 45px; opacity: 0.7; background-color: white" onclick="note_Submit()"><i></i></button>#}
+{#                            </form>#}
+{#                            </div>#}
+{#                            <div id="edit_div2{{ note.id }}" class="text" style="height: 500px; top: 30px"> <!--可使用 min-height 实现编辑区域自动增加高度-->#}
+{##}
+{#                            </div>#}
+{#                        </div>#}
+{##}
+{#                    </div>#}
+{#                {% endfor %}#}
+
+    </div>
+</div>
+<!-- // show note END -->

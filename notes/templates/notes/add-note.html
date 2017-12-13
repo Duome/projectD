@@ -1,0 +1,31 @@
+<!-- add note -->
+<div id="add_note" class="tab-pane widget-body-regular " style="width: 1430px; height: 610px">
+    <div>
+        <a class="glyphicons tag" style="opacity: 0.5"><i></i><span>标签</span></a>
+        <select id="add-note-tag" class="control" name="add-tag" title="add-tag">
+            <option></option>
+            {% for tag in tags %}
+                {% if ret and tag_name == tag.name %}
+                    <option value="{{ tag.name }}" selected>{{ tag.name }}</option>
+                {% else %}
+                    <option value="{{ tag.name }}">{{ tag.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <a href="#" onclick="showTags()">标签管理</a>
+    </div>
+    <div id="div1" class="toolbar"></div>
+    <div>
+    <form id="note_form" method="post">
+    {% csrf_token %}
+        &nbsp;&nbsp;&nbsp;<input class="text-primary" name="note_title" placeholder="请输入标题" style="width: 1400px; border-style: none; position: absolute; font-size: 22px; opacity: 0.7" />
+        <input type="text" id="note_text" name="note_text" style="display:none"/>
+        <input type="text" id="note_content" name="note_content" style="display:none"/>
+        <input type="text" id="note_tag" name="note_tag" style="display:none">
+        <button class="glyphicons no-js ok_2" style="border-style: none; position: absolute; right: 45px; opacity: 0.7; background-color: white" onclick="note_Submit()"><i></i></button>
+    </form>
+    </div>
+    <div id="div2" class="text" style="height: 500px; top: 30px"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+    </div>
+</div>
+<!-- // add note END -->
